@@ -6,9 +6,11 @@ import { getFeedItems } from './feedService';
 import player from './player';
 import { podcastListItem } from './components/podListItem';
 import { playerUi } from './components/playerUi';
+import { header } from './components/header';
+import { durationStringToSec } from './utils';
 
 const state: State = {
-  title: 'Search for podcast',
+  title: 'Podspace',
   searchResults: [],
   podcasts: getPods(),
   podcast: {
@@ -23,16 +25,7 @@ window.state = state;
 const template = (state: State) => {
   return html`
   <div>
-    <h1>§ ${state.title} §</h1>
-    <form name="search">
-      <input name="searchInput" type="text" placeholder="..." />
-    </form>
-    <div class="search-results">
-      <h3>Results: ${state.searchResults.length}</h3>
-      <div class="list-container">
-        ${podcastListItem(state.searchResults, 'podcast-search-result')}
-      </div>
-    </div>
+    ${header(state)}
     <div class="podcasts-favorites">
       <h3>My Podcasts</h3>
       <div class="list-container">
@@ -84,7 +77,7 @@ document.addEventListener('click', async ({target}) => {
     if (target.matches('.saved-podcast')) {
       const pod = state.podcasts.find(p => p.collectionId.toString() === target.id);
       if(pod) {
-        console.log('render feed for', pod.collectionName, pod.feedUrl);
+        console.log('render feed for', pod.collectionName, pod.feedUrl, pod);
         const {items} = await getFeedItems(pod.feedUrl);
         state.podcast = {
           meta: pod,
@@ -144,10 +137,6 @@ player.addEventListener('timeupdate', (event: Event) => {
   }
   // console.log('timeupdate', event);
 })
-function durationStringToSec(duration: string) {
-  // 01:59:23 => 23 + (59*60) + (1*60*60)
-  return duration.split(':').reverse().reduce((p,n,idx) => p + parseFloat(n) * Math.pow(60, idx), 0);
-}
 
 
 // trigger first render
@@ -168,7 +157,7 @@ if('serviceWorker' in navigator) {
   });
 }
 
-interface State {
+export interface State {
   title ?: string,
   searchResults: iTunesResult[],
   podcasts: iTunesResult[],

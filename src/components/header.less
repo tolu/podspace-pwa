@@ -1,0 +1,33 @@
+header {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background-color: cyan;
+  h1 {
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+  }
+  form {
+    flex-grow: 1;
+    display: flex;
+    position: relative;
+    input {
+      flex-grow: 1;
+      padding: 0 10px;
+    }
+    .search-results {
+      position: absolute;
+      z-index: 1;
+      max-height: 65vh;
+      overflow: scroll;
+      top: 39px;
+      right: 0;
+      min-width: 330px;
+      background-color: cornsilk;
+    }
+    input:focus + .search-results {
+      display: block;
+    }
+  }
+}
