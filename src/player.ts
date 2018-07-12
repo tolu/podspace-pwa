@@ -21,14 +21,19 @@ export default {
   togglePlay() {
     if(!audio.paused) {
       audio.pause();
-    } else {
-      audio.play();
+      return false;
+    }
+    audio.play();
+    return true;
+  },
+  skip(value: number) {
+    if(audio.src) {
+      audio.currentTime += value;
     }
   },
   setProgress(percent: number) {
-    if(!audio.paused) {
+    if(audio.src) {
       const time = Math.min(100, percent) / 100 * audio.duration;
-      console.log('setProgress', {percent, time})
       audio.currentTime = time;
     }
   },

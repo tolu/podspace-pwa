@@ -14,7 +14,7 @@ fetch(request).then(response => cache.put(request, response));
 /* Static file cache */
 workbox.routing.registerRoute(
   /.*\.(js|css)/,
-  workbox.strategies.staleWhileRevalidate({
+  workbox.strategies.networkFirst({
     cacheName: 'static-resources',
   })
 );

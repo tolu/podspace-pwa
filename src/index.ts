@@ -4,12 +4,15 @@ import { getPods, addPod, removePod } from './state';
 import { RssItem } from './rssStringToJson';
 import { getFeedItems } from './feedService';
 import player from './player';
+import { podcastListItem } from './components/podListItem';
+import { playerUi } from './components/playerUi';
 
 const state: State = {
   title: 'Search for podcast',
   searchResults: [],
   podcasts: getPods(),
   podcast: {
+    meta: null,
     items: []
   },
   player: undefined
@@ -17,63 +20,38 @@ const state: State = {
 // @ts-ignore
 window.state = state;
 
-const podcastList = (list: iTunesResult[], className: string) => list.map((r) => {
-  return html`
-  <div>
-    <img class="${className}"
-          title=${r.collectionName}
-          src=${r.artworkUrl100}
-          alt="${r.trackName}"
-          id="${r.collectionId}" />
-  </div>`;
-})
-
 const template = (state: State) => {
   return html`
-  <h1>§ ${state.title} §</h1>
-  <form name="search">
-    <input name="searchInput" type="text" placeholder="..." />
-  </form>
-  <div class="search-results">
-    <h3>Results: ${state.searchResults.length}</h3>
-    <div class="list-container">
-      ${podcastList(state.searchResults, 'podcast-search-result')}
+  <div>
+    <h1>§ ${state.title} §</h1>
+    <form name="search">
+      <input name="searchInput" type="text" placeholder="..." />
+    </form>
+    <div class="search-results">
+      <h3>Results: ${state.searchResults.length}</h3>
+      <div class="list-container">
+        ${podcastListItem(state.searchResults, 'podcast-search-result')}
+      </div>
     </div>
-  </div>
-  <div class="podcasts-favorites">
-    <h3>My Podcasts</h3>
-    <div class="list-container">
-      ${podcastList(state.podcasts, 'saved-podcast')}
+    <div class="podcasts-favorites">
+      <h3>My Podcasts</h3>
+      <div class="list-container">
+        ${podcastListItem(state.podcasts, 'saved-podcast')}
+      </div>
     </div>
+    ${ state.podcast.items.length ? html`
+    <div class="podcasts-episodes">
+      <h3>Selected Podcast</h3>
+      <ol>
+        ${ state.podcast.items.map(i => html`<li class="playable" data-src=${i.enclosure.url}>${i.title} - ${i.duration}</li>`) }
+      </ol>
+    </div>` : '' }
   </div>
-  ${ state.podcast.items.length ? html`
-  <div class="podcasts-episodes">
-    <h3>Selected Podcast</h3>
-    <ol>
-      ${ state.podcast.items.map(i => html`<li class="playable" data-src=${i.enclosure.url}>${i.title} - ${i.duration}</li>`) }
-    </ol>
-  </div>` : '' }
-  ${ playerTpl(state.player) }
+  ${ playerUi(state.player) }
   `;
 }
-function playerTpl(playerState?: PlayerState) {
-  const {
-    title = 'No audio selected',
-    duration = 0,
-    progress = 0,
-  } = playerState || {};
-  
-  return html`
-  <div class="pod-player">
-    <div>${title}</div>
-    <button> Play/Pause </button>
-    <input type="range" value=${progress/duration*100 || 0} min="0" max="100" step="0.01" />
-    <span>${durationSecToString(progress)}/${durationSecToString(duration)}</span>
-  </div>
-  `
-}
 
-const updateState = (newState: any) =>{
+const updateState = (newState: any) => {
   Object.assign(state, newState);
   render(template(state), document.body)
 }
@@ -109,6 +87,7 @@ document.addEventListener('click', async ({target}) => {
         console.log('render feed for', pod.collectionName, pod.feedUrl);
         const {items} = await getFeedItems(pod.feedUrl);
         state.podcast = {
+          meta: pod,
           items: items.slice(0,10)
         }
         updateState({});
@@ -123,7 +102,9 @@ document.addEventListener('click', async ({target}) => {
         state.player = {
           playing: true,
           progress: 0,
-          title: pod.title,
+          showTitle: (state.podcast.meta || {} as any).collectionName,
+          episodeTitle: pod.title,
+          image: (state.podcast.meta || {} as any).artworkUrl100,
           duration: durationStringToSec(pod.duration)
         }
         updateState({});
@@ -132,15 +113,25 @@ document.addEventListener('click', async ({target}) => {
         console.log('Found no pod with src = ', src);
       }
     }
-    if (target.matches('.pod-player button')) {
-      console.log('toggle play');
-      player.togglePlay();
+    if (target.matches('.pod-player .play-pause')) {
+      const isPlaying = player.togglePlay();
+      if(state.player){
+        state.player.playing = isPlaying;
+        updateState({});
+      }
+    }
+    if (target.matches('.pod-player .skip-back')) {
+      player.skip(-10);
+    }
+    if (target.matches('.pod-player .skip-ffw')) {
+      player.skip(30);
     }
   }
 });
 document.addEventListener('change', ({target}) => {
   if (target instanceof HTMLInputElement) {
     if(target.matches('.pod-player input')) {
+      console.log('onChange', target.value);
       player.setProgress(parseFloat(target.value));
     }
   }
@@ -156,13 +147,6 @@ player.addEventListener('timeupdate', (event: Event) => {
 function durationStringToSec(duration: string) {
   // 01:59:23 => 23 + (59*60) + (1*60*60)
   return duration.split(':').reverse().reduce((p,n,idx) => p + parseFloat(n) * Math.pow(60, idx), 0);
-}
-const pad = (value: string | number) => value.toString().padStart(2, '0');
-function durationSecToString(duration: number) {
-  // 01:59:23 => 23 + (59*60) + (1*60*60)
-  const d = new Date(0);
-  d.setSeconds(Math.round(duration));
-  return `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
 }
 
 
@@ -189,15 +173,18 @@ interface State {
   searchResults: iTunesResult[],
   podcasts: iTunesResult[],
   podcast: {
+    meta: iTunesResult | null,
     items: RssItem[]
   },
   player?: PlayerState
 }
-interface PlayerState {
-  title: string,
+export interface PlayerState {
+  showTitle: string,
+  episodeTitle: string,
   progress: number,
   playing: boolean,
-  duration: number
+  duration: number,
+  image: string
 }
 export interface iTunesResult {
   // wrapperType: string;
