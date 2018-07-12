@@ -42,9 +42,9 @@ const template = (state: State) => {
     ${ state.podcast.items.length ? html`
     <div class="podcasts-episodes">
       <h3>Selected Podcast</h3>
-      <ol>
+      <ul>
         ${ state.podcast.items.map(i => html`<li class="playable" data-src=${i.enclosure.url}>${i.title} - ${i.duration}</li>`) }
-      </ol>
+      </ul>
     </div>` : '' }
   </div>
   ${ playerUi(state.player) }
@@ -88,7 +88,7 @@ document.addEventListener('click', async ({target}) => {
         const {items} = await getFeedItems(pod.feedUrl);
         state.podcast = {
           meta: pod,
-          items: items.slice(0,10)
+          items
         }
         updateState({});
       }
@@ -184,7 +184,7 @@ export interface PlayerState {
   progress: number,
   playing: boolean,
   duration: number,
-  image: string
+  image: string,
 }
 export interface iTunesResult {
   // wrapperType: string;
