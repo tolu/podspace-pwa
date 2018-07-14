@@ -1,5 +1,5 @@
 import { html, render } from 'lit-html';
-import { search } from './itunesService';
+import { search } from './iTunesService';
 import { getPods, addPod, removePod } from './state';
 import { RssItem } from './rssStringToJson';
 import { getFeedItems } from './feedService';
