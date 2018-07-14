@@ -45,3 +45,28 @@ workbox.routing.registerRoute(
     ],
   }),
 );
+
+/* MP3 Cache */
+workbox.routing.registerRoute(
+  ({url}: {url: URL}) => {
+    // Return true if the route should match
+    const isMp3 = /\.(?:mp3)$/.test(url.pathname);
+    const offline = /podspace-offline/.test(url.search);
+    if(isMp3 && offline) {
+      console.log('offline mp3', url.toString());
+    }
+    return isMp3 && offline;
+  },
+  workbox.strategies.cacheFirst({
+    cacheName: 'audio',
+    plugins: [
+      new workbox.expiration.Plugin({
+        maxEntries: 60,
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
+      }),
+      new workbox.cacheableResponse.Plugin({
+        statuses: [0, 200]
+      }),
+    ],
+  }),
+);

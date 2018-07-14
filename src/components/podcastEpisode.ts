@@ -10,8 +10,10 @@ export const podcastEpisode = (episode: RssItem) => {
     <button disabled class="nrk-unset">
       ${episode.title} - ${episode.duration}
     </button>
-    <button class="nrk-button">
-      <svg style="width:1.5em;height:1.5em" aria-hidden="true"><use xlink:href="#nrk-poll" /></svg>
+    <button class="nrk-button offline-episode"
+            aria-label="Offline podcast"
+            data-src="${episode.enclosure.url}">
+      <svg style="width:1.5em;height:1.5em" aria-hidden="true"><use xlink:href="#nrk-download" /></svg>
     </button>
   </li>`
 }

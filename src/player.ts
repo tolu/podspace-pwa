@@ -6,10 +6,17 @@ window.audio = audio;
 
 export default {
   play(pod: RssItem) {
-    if(audio.src === pod.enclosure.url) {
+    // TODO: HACK
+    const offline = localStorage.getItem('offline');
+    let src = pod.enclosure.url;
+    if(offline && offline.indexOf(pod.enclosure.url) !== -1) {
+      console.log('playing offline stuff');
+      src = offline;
+    }
+    if(audio.src === src) {
       audio.paused && audio.play();
     } else {
-      audio.src = pod.enclosure.url;
+      audio.src = src;
       audio.play();  
     }
   },

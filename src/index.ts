@@ -64,12 +64,25 @@ document.addEventListener('click', async ({target}) => {
       console.log(state.podcasts.length);
       updateState({});
     }
-    if (target.matches('.remove-podcast')) {
+    else if (target.matches('.remove-podcast')) {
       removePod(target.getAttribute('data-id') || '');
       state.podcasts = getPods();
       updateState({});
     }
-    if (target.matches('.saved-podcast')) {
+    else if (target.matches('.offline-episode')) {
+      const src = target.getAttribute('data-src');
+      console.log('offline episode', src);
+      try {
+        // request with no-cors since that is what audio-element does
+        await fetch(src + '?podspace-offline', { mode: 'no-cors' });
+        console.log('episode available offline');
+        // HACK: find way to store offline status
+        localStorage.setItem('offline', src + '?podspace-offline');
+      } catch (err) {
+        console.error('mp3 fetch failed...');
+      }
+    }
+    else if (target.matches('.saved-podcast')) {
       const pod = state.podcasts.find(p => p.collectionId.toString() === target.id);
       if(pod) {
         console.log('render feed for', pod.collectionName, pod.feedUrl, pod);
@@ -81,7 +94,7 @@ document.addEventListener('click', async ({target}) => {
         updateState({});
       }
     }
-    if (target.matches('.playable')) {
+    else if (target.matches('.playable')) {
       player.reset();
       const src = target.getAttribute('data-src') || '';
       const pod = state.podcast.items.find(p => p.enclosure.url === src);
@@ -101,17 +114,17 @@ document.addEventListener('click', async ({target}) => {
         console.log('Found no pod with src = ', src);
       }
     }
-    if (target.matches('.pod-player .play-pause')) {
+    else if (target.matches('.pod-player .play-pause')) {
       const isPlaying = player.togglePlay();
       if(state.player){
         state.player.playing = isPlaying;
         updateState({});
       }
     }
-    if (target.matches('.pod-player .skip-back')) {
+    else if (target.matches('.pod-player .skip-back')) {
       player.skip(-10);
     }
-    if (target.matches('.pod-player .skip-ffw')) {
+    else if (target.matches('.pod-player .skip-ffw')) {
       player.skip(30);
     }
   }
