@@ -21,6 +21,10 @@
     "workbox-sw": "^3.2.0"
   },
   "devDependencies": {
+    "@nrk/core-dialog": "^1.0.6",
+    "@nrk/core-input": "^1.1.0",
+    "@nrk/core-scroll": "^1.1.6",
+    "@nrk/core-toggle": "^1.1.6",
     "less": "^3.0.4"
   }
 }
