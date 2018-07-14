@@ -8,6 +8,7 @@ import { podcastListItem } from './components/podListItem';
 import { playerUi } from './components/playerUi';
 import { header } from './components/header';
 import { durationStringToSec } from './utils';
+import { selectedPodcast } from './components/selectedPodcast';
 
 const state: State = {
   title: 'Podspace',
@@ -32,19 +33,7 @@ const template = (state: State) => {
         ${podcastListItem(state.podcasts, 'saved-podcast')}
       </ul>
     </div>
-    ${ state.podcast.meta ? html`
-    <div class="podcasts-episodes">
-      <h3>${state.podcast.meta.collectionName}</h3>
-      <div>
-        <button class="nrk-button remove-podcast" data-id="${state.podcast.meta.collectionId}" aria-label="Remove podcast">
-          Remove
-          <svg style="width:1.5em;height:1.5em" aria-hidden="true"><use xlink:href="#nrk-close-circle" /></svg>
-        </button>
-      </div>
-      <ul class="nrk-unset">
-        ${ state.podcast.items.map(i => html`<li class="playable" data-src=${i.enclosure.url}>${i.title} - ${i.duration}</li>`) }
-      </ul>
-    </div>` : '' }
+    ${ selectedPodcast(state.podcast) }
   </div>
   ${ playerUi(state.player) }
   `;
@@ -167,11 +156,12 @@ export interface State {
   title ?: string,
   searchResults: iTunesResult[],
   podcasts: iTunesResult[],
-  podcast: {
-    meta: iTunesResult | null,
-    items: RssItem[]
-  },
+  podcast: SelectedPodcast,
   player?: PlayerState
+}
+export interface SelectedPodcast {
+  meta: iTunesResult | null,
+  items: RssItem[]
 }
 export interface PlayerState {
   showTitle: string,
