@@ -2,6 +2,8 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox
 
 if (workbox) {
   console.log(`Yay! Workbox is loaded 🎉`);
+  // workbox.core.LOG_LEVELS: {debug: 0, log: 1, warn: 2, error: 3, silent: 4}
+  workbox.core.setLogLevel(workbox.core.LOG_LEVELS.silent);
 } else {
   console.log(`Boo! Workbox didn't load 😬`);
 }

@@ -8,7 +8,7 @@ header {
     margin: 0;
     flex-grow: 1;
   }
-  form {
+  .search {
     flex-grow: 1;
     display: flex;
     position: relative;
@@ -16,15 +16,27 @@ header {
       flex-grow: 1;
       padding: 0 10px;
     }
+    .search-btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0 10px;
+      height: 100%;
+    }
     .search-results {
       position: absolute;
       z-index: 1;
       max-height: 65vh;
       overflow: scroll;
-      top: 39px;
+      top: 48px;
       right: 0;
       min-width: 330px;
       background-color: cornsilk;
+      padding: 10px 0;
+
+      &.no-results {
+        padding: 0;
+      }
     }
     input:focus + .search-results {
       display: block;

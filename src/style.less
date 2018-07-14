@@ -1,5 +1,9 @@
 @import 'components/header.less';
 
+* {
+  box-sizing: border-box;
+}
+
 html {
   font-family: "proxima-nova","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
@@ -92,5 +96,14 @@ body {
     .controls {
       padding-top: 20px;
     }
+  }
+}
+
+/* When aria-label exist on button/a elements
+    and svg is hidden from screen readers
+    prevent clicks on svg and defer to button/a -tag */
+button[aria-label], a[aria-label] {
+  [aria-hidden="true"] {
+    pointer-events: none;
   }
 }

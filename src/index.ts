@@ -28,14 +28,20 @@ const template = (state: State) => {
     ${header(state)}
     <div class="podcasts-favorites">
       <h3>My Podcasts</h3>
-      <div class="list-container">
+      <ul class="nrk-unset list-container">
         ${podcastListItem(state.podcasts, 'saved-podcast')}
-      </div>
+      </ul>
     </div>
-    ${ state.podcast.items.length ? html`
+    ${ state.podcast.meta ? html`
     <div class="podcasts-episodes">
-      <h3>Selected Podcast</h3>
-      <ul>
+      <h3>${state.podcast.meta.collectionName}</h3>
+      <div>
+        <button class="nrk-button remove-podcast" data-id="${state.podcast.meta.collectionId}" aria-label="Remove podcast">
+          Remove
+          <svg style="width:1.5em;height:1.5em" aria-hidden="true"><use xlink:href="#nrk-close-circle" /></svg>
+        </button>
+      </div>
+      <ul class="nrk-unset">
         ${ state.podcast.items.map(i => html`<li class="playable" data-src=${i.enclosure.url}>${i.title} - ${i.duration}</li>`) }
       </ul>
     </div>` : '' }
@@ -49,14 +55,14 @@ const updateState = (newState: any) => {
   render(template(state), document.body)
 }
 
-document.addEventListener('submit', async (event) => {
-  console.log('in submit');
-  event.preventDefault();
-  // @ts-ignore
-  const value = document.forms.search.elements.searchInput.value;
-  const {results} = await search(value);
-  updateState({searchResults:results})
-  console.log(results);
+document.addEventListener('keydown', async ({target, keyCode}) => {
+  if(target instanceof HTMLInputElement) {
+    if(target.matches('.search-field') && keyCode === 13) {
+      const {results} = await search(target.value);
+      updateState({searchResults:results})
+      console.log(results);
+    }
+  }
 })
 
 document.addEventListener('click', async ({target}) => {
@@ -69,8 +75,8 @@ document.addEventListener('click', async ({target}) => {
       console.log(state.podcasts.length);
       updateState({});
     }
-    if (target.matches('.saved-podcast .remove')) {
-      removePod(target.id);
+    if (target.matches('.remove-podcast')) {
+      removePod(target.getAttribute('data-id') || '');
       state.podcasts = getPods();
       updateState({});
     }
