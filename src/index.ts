@@ -9,6 +9,7 @@ import { playerUi } from './components/playerUi';
 import { header } from './components/header';
 import { durationStringToSec } from './utils';
 import { selectedPodcast } from './components/selectedPodcast';
+import { getCachedMp3Url } from './offlineAudioManager';
 
 const state: State = {
   title: 'Podspace',
@@ -72,12 +73,19 @@ document.addEventListener('click', async ({target}) => {
     else if (target.matches('.offline-episode')) {
       const src = target.getAttribute('data-src');
       console.log('offline episode', src);
+      target.classList.add('is-busy');
+      // TODO: move all of this to offlineManager
       try {
         // request with no-cors since that is what audio-element does
         await fetch(src + '?podspace-offline', { mode: 'no-cors' });
-        console.log('episode available offline');
-        // HACK: find way to store offline status
-        localStorage.setItem('offline', src + '?podspace-offline');
+        const handle = setInterval(async () => {
+          const pod: any = {enclosure: { url: src }};
+          if(!!(await getCachedMp3Url(pod))) {
+            clearInterval(handle);
+            console.log('episode available offline');
+            updateState({});
+          } 
+        }, 350);
       } catch (err) {
         console.error('mp3 fetch failed...');
       }

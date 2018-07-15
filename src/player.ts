@@ -1,17 +1,17 @@
 import { RssItem } from "./rssStringToJson";
+import { getCachedMp3Url } from "./offlineAudioManager";
 
 const audio = new Audio();
 // @ts-ignore
 window.audio = audio;
 
 export default {
-  play(pod: RssItem) {
-    // TODO: HACK
-    const offline = localStorage.getItem('offline');
+  async play(pod: RssItem) {
+    const cacheUrl = await getCachedMp3Url(pod);
     let src = pod.enclosure.url;
-    if(offline && offline.indexOf(pod.enclosure.url) !== -1) {
+    if(cacheUrl) {
       console.log('playing offline stuff');
-      src = offline;
+      src = cacheUrl;
     }
     if(audio.src === src) {
       audio.paused && audio.play();
