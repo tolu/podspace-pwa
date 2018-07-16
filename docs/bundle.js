@@ -1,3 +1,4 @@
+/* Bundle built Mon Jul 16 2018 23:59:02 GMT+0200 (CEST), current version 1.0.0 */
 (function () {
     'use strict';
 

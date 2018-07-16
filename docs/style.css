@@ -48,21 +48,6 @@ header .search input:focus + .search-results {
 .podcast-episode button.is-busy svg {
   display: none;
 }
-* {
-  box-sizing: border-box;
-}
-html {
-  font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-body {
-  margin: 0;
-  padding: 0 0 150px 0;
-}
-.list-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-}
 .pod-player {
   position: fixed;
   bottom: 0;
@@ -143,6 +128,21 @@ body {
 }
 .pod-player.mini .controls {
   padding-top: 20px;
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+body {
+  margin: 0;
+  padding: 0 0 150px 0;
+}
+.list-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 /* When aria-label exist on button/a elements
     and svg is hidden from screen readers

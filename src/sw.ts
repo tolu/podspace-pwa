@@ -14,19 +14,21 @@ fetch(request).then(response => cache.put(request, response));
 */
 
 /* Static file cache */
+// Root html
 workbox.routing.registerRoute(
-  "/",
+  /^(\/podspace-pwa)?\/$/,
   workbox.strategies.networkFirst({
     cacheName: "static-resources",
   }),
 );
+// Static files
 workbox.routing.registerRoute(
   /.*\.(js|css)/,
   workbox.strategies.networkFirst({
     cacheName: "static-resources",
   }),
 );
-/* Image cache */
+// Image cache
 workbox.routing.registerRoute(
   ({url}: {url: URL}) => {
     // Return true if the route should match
@@ -61,7 +63,7 @@ workbox.routing.registerRoute(
     cacheName: "audio",
     plugins: [
       new workbox.expiration.Plugin({
-        maxEntries: 60,
+        maxEntries: 20,
         maxAgeSeconds: 30 * 24 * 60 * 60, // 30 Days
       }),
       new workbox.cacheableResponse.Plugin({

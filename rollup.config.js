@@ -1,3 +1,4 @@
+import pkg from './package.json';
 import less from 'rollup-plugin-less';
 import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
@@ -21,13 +22,15 @@ const plugins = [
   })
 ];
 
+const banner = `/* Bundle built ${new Date()}, current version ${pkg.version} */`
 export default [{
   input: './src/index.ts',
   output: {
     file: './docs/bundle.js',
     format: 'iife',
     sourcemap: true,
-    name: 'App'
+    name: 'App',
+    banner
   },
   plugins
 }, {
@@ -36,7 +39,8 @@ export default [{
     file: './docs/sw.js',
     format: 'es',
     sourcemap: true,
-    name: 'SW'
+    name: 'SW',
+    banner
   },
   plugins
 }];

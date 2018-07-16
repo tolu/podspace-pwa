@@ -1,3 +1,4 @@
+/* Bundle built Mon Jul 16 2018 23:59:02 GMT+0200 (CEST), current version 1.0.0 */
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox-sw.js");
 if (workbox) {
     console.log(`Yay! Workbox is loaded 🎉`);
@@ -12,13 +13,15 @@ const request = new Request('https://third-party-no-cors.com/', { mode: 'no-cors
 fetch(request).then(response => cache.put(request, response));
 */
 /* Static file cache */
-workbox.routing.registerRoute("/", workbox.strategies.networkFirst({
+// Root html
+workbox.routing.registerRoute(/^(\/podspace-pwa)?\/$/, workbox.strategies.networkFirst({
     cacheName: "static-resources",
 }));
+// Static files
 workbox.routing.registerRoute(/.*\.(js|css)/, workbox.strategies.networkFirst({
     cacheName: "static-resources",
 }));
-/* Image cache */
+// Image cache
 workbox.routing.registerRoute(({ url }) => {
     // Return true if the route should match
     return /\.(?:png|gif|jpg|jpeg|svg)$/.test(url.pathname);
@@ -47,7 +50,7 @@ workbox.routing.registerRoute(({ url }) => {
     cacheName: "audio",
     plugins: [
         new workbox.expiration.Plugin({
-            maxEntries: 60,
+            maxEntries: 20,
             maxAgeSeconds: 30 * 24 * 60 * 60,
         }),
         new workbox.cacheableResponse.Plugin({
