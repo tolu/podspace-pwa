@@ -1,4 +1,4 @@
-/* Bundle built Tue Jul 17 2018 00:06:56 GMT+0200 (CEST), current version 1.0.0 */
+/* Bundle built Tue Jul 17 2018 00:12:59 GMT+0200 (CEST), current version 1.0.0 */
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox-sw.js");
 if (workbox) {
     console.log(`Yay! Workbox is loaded 🎉`);
@@ -18,7 +18,7 @@ workbox.routing.registerRoute(/^(podspace-pwa)?\/$/, workbox.strategies.networkF
     cacheName: "static-resources",
 }));
 // Static files
-workbox.routing.registerRoute(/.*\.(js|css)/, workbox.strategies.networkFirst({
+workbox.routing.registerRoute(/.*\.(js|css)$/, workbox.strategies.networkFirst({
     cacheName: "static-resources",
 }));
 // Image cache

@@ -23,7 +23,7 @@ workbox.routing.registerRoute(
 );
 // Static files
 workbox.routing.registerRoute(
-  /.*\.(js|css)/,
+  /.*\.(js|css)$/,
   workbox.strategies.networkFirst({
     cacheName: "static-resources",
   }),
