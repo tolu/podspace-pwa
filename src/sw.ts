@@ -16,7 +16,7 @@ fetch(request).then(response => cache.put(request, response));
 /* Static file cache */
 // Root html
 workbox.routing.registerRoute(
-  /^(\/podspace-pwa)?\/$/,
+  /^(podspace-pwa)?\/$/,
   workbox.strategies.networkFirst({
     cacheName: "static-resources",
   }),

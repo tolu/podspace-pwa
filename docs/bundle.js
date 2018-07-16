@@ -1,4 +1,4 @@
-/* Bundle built Mon Jul 16 2018 23:59:02 GMT+0200 (CEST), current version 1.0.0 */
+/* Bundle built Tue Jul 17 2018 00:06:56 GMT+0200 (CEST), current version 1.0.0 */
 (function () {
     'use strict';
 
@@ -687,7 +687,7 @@
     };
 
     const playerUi = (playerState) => {
-        const { showTitle = "No show", episodeTitle = "No episode", duration = 0, progress = 0, image = "http://via.placeholder.com/100x100", playing = false, } = playerState || {};
+        const { showTitle = "No show", episodeTitle = "No episode", duration = 0, progress = 0, image = "https://via.placeholder.com/100x100", playing = false, } = playerState || {};
         const rangeValue = progress / duration * 100 || 0;
         const slider = document.querySelector("#slider");
         if (slider instanceof HTMLInputElement) {

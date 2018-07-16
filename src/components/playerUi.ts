@@ -8,7 +8,7 @@ export const playerUi = (playerState?: IPlayerState) => {
     episodeTitle = "No episode",
     duration = 0,
     progress = 0,
-    image = "http://via.placeholder.com/100x100",
+    image = "https://via.placeholder.com/100x100",
     playing = false,
   } = playerState || {};
 
