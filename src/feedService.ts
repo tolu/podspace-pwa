@@ -1,39 +1,39 @@
 import { createCache } from "./cache";
-import { rssStringToJson, RssItems } from './rssStringToJson';
+import { IRssItems, rssStringToJson } from "./rssStringToJson";
 import { durationSecToString } from "./utils";
 
-const cache = createCache('pod-feed');
+const cache = createCache("pod-feed");
 
-export const getFeedItems = async (feedUrl: string): Promise<RssItems> => {
-  
+export const getFeedItems = async (feedUrl: string): Promise<IRssItems> => {
+
   const cacheResponse = cache.get(feedUrl);
-  if(cacheResponse) {
+  if (cacheResponse) {
     return cacheResponse;
   }
   // get from network and add to cache
   let response: Response;
-  let text: string = '';
+  let text: string = "";
   let json: any;
   try {
     response = await fetch(feedUrl);
     text  = await response.text();
   } catch (error) {
-    console.error('OH NOES', error);
-    console.warn('trying fallback via https://api.rss2json.com/v1/api.json ...');
+    console.error("OH NOES", error);
+    console.warn("trying fallback via https://api.rss2json.com/v1/api.json ...");
     response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`);
     json = await response.json();
   }
-  
+
   if (response.ok) {
     const data = json ? toRssItems(json) : rssStringToJson(text);
     cache.set(feedUrl, data);
     return data;
   }
-  console.warn('Request failed', response);
+  console.warn("Request failed", response);
   return { items: [] };
-}
+};
 
-function toRssItems(rssData: RssApiResponse): RssItems {
+function toRssItems(rssData: IRssApiResponse): IRssItems {
   const total = rssData.items.length;
   return {
     items: rssData.items.map((i, idx) => ({
@@ -46,19 +46,19 @@ function toRssItems(rssData: RssApiResponse): RssItems {
       },
       episode: (total - idx).toString(),
       image: {
-        href: i.thumbnail
+        href: i.thumbnail,
       },
       pubDate: i.pubDate,
       subtitle: i.content,
       summary: i.description,
-    }))
-  }
+    })),
+  };
 }
 
-interface RssApiResponse {
-  items: RssApiItem[]
+interface IRssApiResponse {
+  items: IRssApiItem[];
 }
-interface RssApiItem {
+interface IRssApiItem {
   title: string;
   pubDate: string;
   link: string;
@@ -67,10 +67,10 @@ interface RssApiItem {
   thumbnail: string;
   description: string;
   content: string;
-  enclosure: Enclosure;
+  enclosure: IEnclosure;
 }
 
-interface Enclosure {
+interface IEnclosure {
   link: string;
   type: string;
   duration: number;

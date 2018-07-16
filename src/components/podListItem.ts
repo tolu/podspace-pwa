@@ -1,7 +1,7 @@
-import { html } from 'lit-html';
-import { iTunesResult } from '../index';
+import { html } from "lit-html";
+import { IiTunesResult } from "../index";
 
-export const podcastListItem = (list: iTunesResult[], className: string) => list.map((r) => {
+export const podcastListItem = (list: IiTunesResult[], className: string) => list.map((r) => {
   return html`
   <li class="pod-list-item">
     <button class="nrk-unset ${className}" id="${r.collectionId}" aria-label="${r.collectionName}">
@@ -11,4 +11,4 @@ export const podcastListItem = (list: iTunesResult[], className: string) => list
             alt="${r.trackName}" />
     </button>
   </li>`;
-})
+});

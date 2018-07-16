@@ -13,6 +13,7 @@ Podcast PWA with offline support
 * [ ] add some design PLEASE!
 * [ ] think about actual data model (especially offline) and domain design
 * [ ] implement swiping for navigating between views
-* [ ] replace parcel-bundler with something else (rollup?)
+* [X] replace parcel-bundler with something else (rollup?)
+* [ ] fix watch/reload on change less files
 * [ ] add playlist (queue) functionality
 * [ ] publish on github pages

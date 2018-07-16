@@ -1,11 +1,11 @@
-import { html } from 'lit-html';
-import { SelectedPodcast } from '../index';
-import { podcastEpisode } from './podcastEpisode';
-import { getAllCachedMp3Urls, isOffline } from '../offlineAudioManager';
+import { html } from "lit-html";
+import { ISelectedPodcast } from "../index";
+import { getAllCachedMp3Urls, isOffline } from "../offlineAudioManager";
+import { podcastEpisode } from "./podcastEpisode";
 
-export const selectedPodcast = async (podcast: SelectedPodcast) => {
-  if(!podcast.meta) {
-    return '';
+export const selectedPodcast = async (podcast: ISelectedPodcast) => {
+  if (!podcast.meta) {
+    return "";
   }
   const cachedMp3Urls = await getAllCachedMp3Urls();
   return html`
@@ -20,5 +20,5 @@ export const selectedPodcast = async (podcast: SelectedPodcast) => {
     <ul class="nrk-unset">
       ${ podcast.items.map((episode) => podcastEpisode(episode, isOffline(episode, cachedMp3Urls))) }
     </ul>
-  </div>`
-}
+  </div>`;
+};
