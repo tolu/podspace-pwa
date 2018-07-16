@@ -1,5 +1,8 @@
+# podspace-pwa
 
-# Inspiration
+Podcast PWA with offline support
+
+## Inspiration
 
 * podspace android app
 * https://shortorange.com/
