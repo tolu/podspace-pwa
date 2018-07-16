@@ -9,11 +9,11 @@ const plugins = [
   commonjs(),
   typescript({ typescript: require('typescript') }),
   less({
-    output: './dist/style.css'
+    output: './docs/style.css'
   }),
   serve({
     open: false,
-    contentBase: 'dist',
+    contentBase: 'docs',
     host: 'localhost',
     port: 1234,
     // Set to true to return index.html instead of 404
@@ -24,7 +24,7 @@ const plugins = [
 export default [{
   input: './src/index.ts',
   output: {
-    file: './dist/bundle.js',
+    file: './docs/bundle.js',
     format: 'iife',
     sourcemap: true,
     name: 'App'
@@ -33,7 +33,7 @@ export default [{
 }, {
   input: './src/sw.ts',
   output: {
-    file: './dist/sw.js',
+    file: './docs/sw.js',
     format: 'es',
     sourcemap: true,
     name: 'SW'
