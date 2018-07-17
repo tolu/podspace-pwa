@@ -4,14 +4,18 @@ import commonjs from 'rollup-plugin-commonjs';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import serve from 'rollup-plugin-serve'
 import typescript from 'rollup-plugin-typescript';
+import livereload from 'rollup-plugin-livereload';
+
+const PROD = process.env.BUILD === 'production';
 
 const plugins = [
   nodeResolve(),
   commonjs(),
   typescript({ typescript: require('typescript') }),
-  less({
-    output: './docs/style.css'
-  }),
+  less({output: './docs/style.css', insert: !PROD }),
+];
+const devPlugins = !PROD ? [
+  livereload('docs'),
   serve({
     open: false,
     contentBase: 'docs',
@@ -20,9 +24,10 @@ const plugins = [
     // Set to true to return index.html instead of 404
     historyApiFallback: false,
   })
-];
+] : [];
 
-const banner = `/* Bundle built ${new Date()}, current version ${pkg.version} */`
+const rev = require('child_process').execSync('git rev-parse HEAD').toString().trim();
+const banner = `/* Bundle version ${pkg.version}, current rev: ${rev} */`
 export default [{
   input: './src/index.ts',
   output: {
@@ -32,13 +37,12 @@ export default [{
     name: 'App',
     banner
   },
-  plugins
+  plugins: [...plugins, ...devPlugins]
 }, {
   input: './src/sw.ts',
   output: {
     file: './docs/sw.js',
     format: 'es',
-    sourcemap: true,
     name: 'SW',
     banner
   },

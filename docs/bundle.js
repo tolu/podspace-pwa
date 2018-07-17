@@ -1,4 +1,4 @@
-/* Bundle built Tue Jul 17 2018 18:57:55 GMT+0200 (CEST), current version 1.0.0 */
+/* Bundle version 1.0.0, current rev: 4a328c107bef7f859b58178b185d43f3a19e809a */
 (function () {
     'use strict';
 
