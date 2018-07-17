@@ -9,8 +9,8 @@ import { getCachedMp3Url } from "./offlineAudioManager";
 import player from "./player";
 import { IRssItem } from "./rssStringToJson";
 import { addPod, getPods, removePod } from "./state";
-import "./style.less";
 import { durationStringToSec } from "./utils";
+import "./style.ts";
 
 const state: IState = {
   title: "Podspace",
@@ -32,7 +32,7 @@ const template = (currentState: IState) => {
     <div class="podcasts-favorites">
       <h3>My Podcasts</h3>
       <ul class="nrk-unset list-container">
-        ${podcastListItem(currentState.podcasts, "saved-podcast")}
+        ${ podcastListItem(currentState.podcasts, "saved-podcast") }
       </ul>
     </div>
     ${ selectedPodcast(currentState.podcast) }
@@ -92,10 +92,9 @@ document.addEventListener("click", async ({target}) => {
       const pod = state.podcasts.find((p) => p.collectionId.toString() === target.id);
       if (pod) {
         console.log("render feed for", pod.collectionName, pod.feedUrl, pod);
-        const {items} = await getFeedItems(pod.feedUrl);
         state.podcast = {
           meta: pod,
-          items,
+          items: (await getFeedItems(pod.feedUrl)).items,
         };
         updateState({});
       }
@@ -149,9 +148,19 @@ player.addEventListener("timeupdate", (event: Event) => {
 });
 
 // trigger first render
-updateState(state);
-// @ts-ignore
-document.querySelector("input").focus();
+(async function init() {
+  // if only a single podcast, load episode list
+  if (state.podcasts.length === 1) {
+    state.podcast = {
+      meta: state.podcasts[0],
+      items: (await getFeedItems(state.podcasts[0].feedUrl)).items,
+    };
+  }
+  console.log(state.podcast.items);
+  updateState(state);
+  // @ts-ignore
+  document.querySelector("input").focus();
+})();
 
 if ("serviceWorker" in navigator) {
   console.log("we got service workers!");
