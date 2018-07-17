@@ -1,7 +1,7 @@
-/* Bundle built Tue Jul 17 2018 18:52:30 GMT+0200 (CEST), current version 1.0.0 */
+/* Bundle built Tue Jul 17 2018 18:57:55 GMT+0200 (CEST), current version 1.0.0 */
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox-sw.js");
 if (workbox) {
-    console.log(`Yay! Workbox is loaded 🎉`, self.location);
+    console.log(`Yay! Workbox is loaded 🎉`);
     // workbox.core.LOG_LEVELS: {debug: 0, log: 1, warn: 2, error: 3, silent: 4}
     workbox.core.setLogLevel(workbox.core.LOG_LEVELS.silent);
 }
@@ -16,9 +16,8 @@ fetch(request).then(response => cache.put(request, response));
 // Root html
 workbox.routing.registerRoute(({ url }) => {
     // Return true if the route should match
-    const willCache = /^(podspace-pwa)?\/$/.test(url.pathname);
-    console.log("and this", { url, willCache });
-    return willCache;
+    const sameHost = self.location.host === url.host;
+    return sameHost && /^(\/podspace-pwa)?\/$/.test(url.pathname);
 }, workbox.strategies.networkFirst({
     cacheName: "static-resources",
 }));

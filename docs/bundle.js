@@ -1,4 +1,4 @@
-/* Bundle built Tue Jul 17 2018 18:52:30 GMT+0200 (CEST), current version 1.0.0 */
+/* Bundle built Tue Jul 17 2018 18:57:55 GMT+0200 (CEST), current version 1.0.0 */
 (function () {
     'use strict';
 
