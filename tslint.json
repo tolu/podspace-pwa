@@ -14,7 +14,8 @@
     "variable-name": [true, "allow-pascal-case", "allow-leading-underscore", "ban-keywords"],
     "no-submodule-imports": false,
     "object-literal-sort-keys": false,
-    "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"]
+    "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
+    "ordered-imports": false
   },
   "rulesDirectory": []
 }
