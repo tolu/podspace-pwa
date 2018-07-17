@@ -1,3 +1,25 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+body {
+  margin: 0;
+  padding: 0 0 150px 0;
+}
+.list-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+/* When aria-label exist on button/a elements
+    and svg is hidden from screen readers
+    prevent clicks on svg and defer to button/a -tag */
+button[aria-label] [aria-hidden="true"],
+a[aria-label] [aria-hidden="true"] {
+  pointer-events: none;
+}
 header {
   display: flex;
   justify-content: center;
@@ -41,12 +63,6 @@ header .search .search-results.no-results {
 }
 header .search input:focus + .search-results {
   display: block;
-}
-.podcast-episode {
-  display: flex;
-}
-.podcast-episode button.is-busy svg {
-  display: none;
 }
 .pod-player {
   position: fixed;
@@ -129,25 +145,38 @@ header .search input:focus + .search-results {
 .pod-player.mini .controls {
   padding-top: 20px;
 }
-* {
-  box-sizing: border-box;
-}
-html {
-  font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-body {
-  margin: 0;
-  padding: 0 0 150px 0;
-}
-.list-container {
+.podcast-episode {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  padding: 10px 0;
+  outline: 1px solid rgba(0, 0, 0, 0.1);
 }
-/* When aria-label exist on button/a elements
-    and svg is hidden from screen readers
-    prevent clicks on svg and defer to button/a -tag */
-button[aria-label] [aria-hidden="true"],
-a[aria-label] [aria-hidden="true"] {
-  pointer-events: none;
+.podcast-episode .titles {
+  flex-grow: 1;
+  padding-left: 10px;
+}
+.podcast-episode button.is-busy svg {
+  display: none;
+}
+.podcast-episode dialog {
+  position: fixed;
+  margin: auto;
+  top: 5%;
+  left: 0;
+  right: 0;
+  border: 0;
+  padding: 2em;
+  width: 100%;
+  max-width: 90%;
+  background: #fff;
+  transition: .2s;
+  z-index: 1;
+}
+.podcast-episode dialog[open]::backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 0;
 }

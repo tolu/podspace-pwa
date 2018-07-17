@@ -1,4 +1,4 @@
-/* Bundle version 1.0.0, current rev: 7275c0930f37513c442493125c237f25cedac94a */
+/* Bundle version 1.0.0, current rev: c4f34812cfd6b53d2c06aa522aaba4e3dd18cfc3 */
 (function () {
     'use strict';
 
@@ -736,24 +736,35 @@
     };
 
     const podcastEpisode = (episode, offline) => {
+        const id = btoa(episode.enclosure.url);
         const icon = !offline
             ? html `<svg style="width:1.5em;height:1.5em" aria-hidden="true"><use xlink:href="#nrk-download" /></svg>`
             : html `<svg style="width:1.5em;height:1.5em" aria-hidden="true"><use xlink:href="#nrk-bookmark--active" /></svg>`;
         return html `
-  <li class="podcast-episode">
-    <button class="nrk-button playable" data-src="${episode.enclosure.url}">
+  <li class="podcast-episode" id="${id}">
+    <button class="nrk-button nrk-button--o playable" data-src="${episode.enclosure.url}">
       <svg style="width:1.5em;height:1.5em" aria-hidden="true"><use xlink:href="#nrk-media-play" /></svg>
     </button>
-    <button disabled class="nrk-unset">
-      ${episode.title} - ${episode.duration}
-    </button>
-    <button class="nrk-button ${offline ? "" : "offline-episode"}"
+    <div class="titles">
+      <div class="nrk-truncate">${episode.title}</div>
+      <span style="float:right">${episode.duration}</span>
+      <button onclick="this.nextElementSibling.showModal()">Description</button>
+      <dialog>
+        <p>${stripHtml(episode.subtitle)}</p>
+        <button class="nrk-button"
+                onclick="this.parentElement.close()">Close</button>
+      </dialog>
+    </div>
+    <button class="nrk-button nrk-button--o ${offline ? "" : "offline-episode"}"
             aria-label="Offline podcast"
             data-src="${episode.enclosure.url}">
       ${icon}
     </button>
   </li>`;
     };
+    function stripHtml(htmlString) {
+        return htmlString.replace(/<\/?(\w|\s|=|"|:|\/|\.|-)+>/gm, "");
+    }
 
     const selectedPodcast = async (podcast) => {
         if (!podcast.meta) {
@@ -1104,10 +1115,9 @@
                 const pod = state.podcasts.find((p) => p.collectionId.toString() === target.id);
                 if (pod) {
                     console.log("render feed for", pod.collectionName, pod.feedUrl, pod);
-                    const { items } = await getFeedItems(pod.feedUrl);
                     state.podcast = {
                         meta: pod,
-                        items,
+                        items: (await getFeedItems(pod.feedUrl)).items,
                     };
                     updateState({});
                 }
@@ -1165,9 +1175,19 @@
         // console.log('timeupdate', event);
     });
     // trigger first render
-    updateState(state);
-    // @ts-ignore
-    document.querySelector("input").focus();
+    (async function init() {
+        // if only a single podcast, load episode list
+        if (state.podcasts.length === 1) {
+            state.podcast = {
+                meta: state.podcasts[0],
+                items: (await getFeedItems(state.podcasts[0].feedUrl)).items,
+            };
+        }
+        console.log(state.podcast.items);
+        updateState(state);
+        // @ts-ignore
+        document.querySelector("input").focus();
+    })();
     if ("serviceWorker" in navigator) {
         console.log("we got service workers!");
         window.addEventListener("load", () => {
