@@ -1,4 +1,4 @@
-/* Bundle version 1.0.0, current rev: 4a328c107bef7f859b58178b185d43f3a19e809a */
+/* Bundle version 1.0.0, current rev: 7275c0930f37513c442493125c237f25cedac94a */
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.2.0/workbox-sw.js");
 if (workbox) {
     console.log(`Yay! Workbox is loaded 🎉`);

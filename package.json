@@ -1,7 +1,7 @@
 {
-  "name": "podspace",
+  "name": "podspace-pwa",
   "version": "1.0.0",
-  "description": "",
+  "description": "Podcast PWA with offline support",
   "main": "index.js",
   "scripts": {
     "start": "rollup -c -w",
@@ -33,7 +33,17 @@
     "rollup-plugin-serve": "^0.4.2",
     "rollup-plugin-typescript": "^0.8.1",
     "tslint": "^5.10.0",
-    "typescript": "^2.9.2",
-    "watch": "^1.0.2"
-  }
+    "typescript": "^2.9.2"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tolu/podspace-pwa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tolu/podspace-pwa/issues"
+  },
+  "homepage": "https://tolu.github.io/podspace-pwa/"
 }
